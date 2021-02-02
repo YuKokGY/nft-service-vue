@@ -2,7 +2,29 @@
   <div>
     <div v-if="!showEdit" class="container">
       <div class="header">
-        <div class="title">商品列表</div>
+        <div class="title">
+          <span>商品列表</span>
+          <el-select v-model="spuDo.online" class="search" placeholder="上下架筛选" size="medium" @change="changeSelect">
+            <el-option
+              v-for="item in isOnline"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-date-picker
+            v-model="range"
+            class="date"
+            end-placeholder="结束日期"
+            range-separator="至"
+            start-placeholder="开始日期"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            @change="datePick">
+          </el-date-picker>
+          <el-input v-model="spuDo.title" autocomplete="off" class="input" placeholder="搜索商品"
+                    prefix-icon="el-icon-search" size="medium" @blur="searchWithTitle"></el-input>
+        </div>
       </div>
       <!--表格-->
       <lin-table
@@ -51,12 +73,19 @@ export default {
         {prop: 'title', label: '商品名称'},
         {prop: 'subtitle', label: '商品描述'},
         {prop: 'price', label: '商品价格'},
-        {prop: 'tags', label: '商品标签'},
-        {prop: 'online', label: '是否上架'},
+        {prop: 'tags', label: '商品标签'}
       ],
       tableData: [],
       showEdit: false,
-      operate: []
+      operate: [],
+      isOnline: [{label: '所有', value: ''}, {label: '上架', value: 1}, {label: '下架', value: 0}],
+      date: [],
+      spuDo: {
+        online: null,
+        title: null,
+        start_time: null,
+        end_time: null
+      }
     }
   },
   async created() {
@@ -73,30 +102,54 @@ export default {
     async handleCurrentChange(val) {
       this.currentPage = val
       this.loading = true
-      await this.getSpuList('changePage')
+      await this.getSpuList({}, 'changePage')
       this.loading = false
     },
-    async getSpuList() {
+    async getSpuList(val) {
       const currentPage = this.currentPage - 1
-      try {
-        this.loading = true
-        const spuList = await spu.getSpuList({count: this.pageCount, page: currentPage})
-        this.tableData = spuList.items
-        this.total_nums = spuList.total
-        // eslint-disable-next-line no-unused-vars
-        this.tableData.forEach(item => {
-          if (item.online === 1) {
-            item.online = '上架'
-          } else {
-            item.online = '下架'
+      if (val != null) {
+        try {
+          this.loading = true
+          const spuList = await spu.getSpuList(val, {count: this.pageCount, page: currentPage})
+          this.tableData = spuList.items
+          this.total_nums = spuList.total
+          this.loading = false
+        } catch (error) {
+          if (error.code === 10020) {
+            this.tableData = []
           }
-        })
-        this.loading = false
-      } catch (error) {
-        if (error.code === 10020) {
-          this.tableData = []
+        }
+      } else {
+        try {
+          this.loading = true
+          const spuList = await spu.getSpuList({}, {count: this.pageCount, page: currentPage})
+          this.tableData = spuList.items
+          this.total_nums = spuList.total
+          this.loading = false
+        } catch (error) {
+          if (error.code === 10020) {
+            this.tableData = []
+          }
         }
       }
+    },
+    async searchWithTitle() {
+      this.spuDo.online = null
+      await this.getSpuList(this.spuDo)
+    },
+    async datePick() {
+      // eslint-disable-next-line prefer-destructuring
+      this.spuDo.start_time = this.date[0]
+      // eslint-disable-next-line prefer-destructuring
+      this.spuDo.end_time = this.date[1]
+      await this.getSpuList(this.spuDo)
+    },
+    async changeSelect() {
+      this.spuDo.title = null
+      if (this.spuDo.online === null) {
+        await this.getSpuList()
+      }
+      await this.getSpuList(this.spuDo)
     },
     handleDelete(val) {
       this.$confirm('此操作将永久删除商品，是否继续？', '提示', {
@@ -135,18 +188,32 @@ export default {
   padding: 0 30px;
 
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
     .title {
       height: 59px;
       line-height: 59px;
       color: $parent-title-color;
       font-size: 16px;
       font-weight: 500;
-    }
 
+      .search {
+        float: right;
+        margin-right: 40px;
+        cursor: pointer;
+      }
+
+      .input {
+        float: right;
+        margin-right: 10px;
+        width: 200px;
+      }
+
+      .date {
+        margin-top: 10px;
+        float: right;
+        margin-right: 10px;
+        width: 200px;
+      }
+    }
   }
 
   .pagination {

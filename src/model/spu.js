@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import {get, post} from '@/lin/plugin/axios'
+import {post} from '@/lin/plugin/axios'
 
 class Spu {
-  async getSpuList({count = this.uCount, page = this.uPage}) {
-    const res = await get('cms/spu/get', {
+  async getSpuList(info, {count = this.uCount, page = this.uPage}) {
+    const res = await post('cms/spu/get', info, {
       count,
       page
     })

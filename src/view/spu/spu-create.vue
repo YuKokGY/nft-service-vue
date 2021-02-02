@@ -88,7 +88,7 @@ export default {
       const res = await spu.createSpu(this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
-        this.$emit('editClose')
+        this.$router.push('/spu/list')
       }
     }
   }
