@@ -22,7 +22,7 @@
               <el-input v-model="form.tags" placeholder="请填写商品标签" size="medium"></el-input>
             </el-form-item>
             <el-form-item label="是否上架" prop="online">
-              <el-switch v-model="form.online" active-value="上架" inactive-value="下架"></el-switch>
+              <el-switch v-model="form.online" :active-value="1" :inactive-value="0"></el-switch>
             </el-form-item>
             <el-form-item class="submit">
               <el-button type="primary" @click="submitForm('form')">保 存</el-button>
@@ -89,11 +89,6 @@ export default {
     },
     // 提交按钮
     async submitForm() {
-      if (this.form.online === '上架') {
-        this.form.online = 1
-      } else {
-        this.form.online = 0
-      }
       const res = await spu.updateSpu(this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)

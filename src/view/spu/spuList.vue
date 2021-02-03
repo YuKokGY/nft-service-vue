@@ -13,7 +13,7 @@
             ></el-option>
           </el-select>
           <el-date-picker
-            v-model="range"
+            v-model="date"
             class="date"
             end-placeholder="结束日期"
             range-separator="至"
@@ -78,7 +78,7 @@ export default {
       tableData: [],
       showEdit: false,
       operate: [],
-      isOnline: [{label: '所有', value: ''}, {label: '上架', value: 1}, {label: '下架', value: 0}],
+      isOnline: [{label: '所有', value: null}, {label: '上架', value: 1}, {label: '下架', value: 0}],
       date: [],
       spuDo: {
         online: null,
@@ -102,7 +102,7 @@ export default {
     async handleCurrentChange(val) {
       this.currentPage = val
       this.loading = true
-      await this.getSpuList({}, 'changePage')
+      await this.getSpuList(this.spuDo, 'changePage')
       this.loading = false
     },
     async getSpuList(val) {
@@ -133,24 +133,34 @@ export default {
         }
       }
     },
+    // 搜索框逻辑
     async searchWithTitle() {
       this.spuDo.online = null
+      this.spuDo.start_time = null
+      this.spuDo.end_time = null
       await this.getSpuList(this.spuDo)
     },
+    // 时间选择器逻辑
     async datePick() {
+      this.spuDo.online = null
+      this.spuDo.title = null
       // eslint-disable-next-line prefer-destructuring
       this.spuDo.start_time = this.date[0]
       // eslint-disable-next-line prefer-destructuring
       this.spuDo.end_time = this.date[1]
       await this.getSpuList(this.spuDo)
     },
+    // 选择框逻辑
     async changeSelect() {
       this.spuDo.title = null
+      this.spuDo.start_time = null
+      this.spuDo.end_time = null
       if (this.spuDo.online === null) {
         await this.getSpuList()
       }
       await this.getSpuList(this.spuDo)
     },
+    // 删除按钮逻辑
     handleDelete(val) {
       this.$confirm('此操作将永久删除商品，是否继续？', '提示', {
         confirmButtonText: '确定',
@@ -169,15 +179,17 @@ export default {
         }
       })
     },
+    // 编辑按钮
     handleEdit(val) {
       this.showEdit = true
       this.tableData.row = val.row
     },
     rowClick() {
     },
+    // 关闭页面
     editClose() {
       this.showEdit = false
-      this.getSpuList()
+      this.getSpuList(this.spuDo)
     }
   }
 }
