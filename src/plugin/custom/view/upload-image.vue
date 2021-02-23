@@ -208,7 +208,7 @@ export default {
       return false
     },
     async getValue(name) {
-      console.log(await this.$refs[name].getValue())
+      console.log((await this.$refs[name].getValue())[0].display)
       // eslint-disable-next-line
       alert('已获取数据, 打印在控制台中')
     },

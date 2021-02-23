@@ -69,6 +69,7 @@ export default {
       total_nums: 0, // 分组内的用户总数
       currentPage: 1, // 默认获取第一页的数据
       pageCount: 10, // 每页10条数据
+      pagination: true,
       tableColumn: [
         {prop: 'title', label: '商品名称'},
         {prop: 'subtitle', label: '商品描述'},

@@ -53,7 +53,7 @@
       v-if="pagination"
       :current-page="pagination.currentPage ? pagination.currentPage : 1"
       :page-size="pagination.pageSize ? pagination.pageSize : 10"
-      :total="pagination.pageTotal ? pagination.pageTotal : null"
+      :total="pagination.total ? pagination.total : null"
       background
       class="pagination"
       layout="prev, pager, next"
@@ -155,6 +155,8 @@ export default {
       oldKey: [], // 上一次选中数据的key
       currentIndex: 1, // 当前索引，切换页面的时候需要重新计算
       rowClassName: '', // 行样式
+      total_nums: 0, // 分组内的用户总数
+      pageCount: 10, // 每页10条数据
     }
   },
   created() {

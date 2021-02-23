@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="title">
-      <span>修改图书</span> <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
+      <span>修改商品</span> <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
     </div>
     <el-divider></el-divider>
     <div class="wrap">
@@ -9,6 +9,10 @@
         <el-col :lg="16" :md="20" :xs="24">
           <el-form ref="form" v-loading="loading" :model="form" :rules="rules" label-width="100px" status-icon
                    @submit.native.prevent>
+            <el-form-item label="商品图片">
+              <upload-imgs ref="uploadEle3" :max-num="max_num" :multiple="false" :rules="rules"
+                           :value="[{display:form.spu_theme_img}]"/>
+            </el-form-item>
             <el-form-item label="商品名称" prop="title">
               <el-input v-model="form.title" autocomplete="off" placeholder="请填写商品名称" size="medium"></el-input>
             </el-form-item>
@@ -37,8 +41,10 @@
 
 <script>
 import spu from '@/model/spu'
+import UploadImgs from '@/component/base/upload-image/index'
 
 export default {
+  components: {UploadImgs},
   props: {
     editSpu: {},
   },
@@ -66,16 +72,21 @@ export default {
       loading: false,
       form: {
         id: this.editSpu.id,
+        spu_theme_img: this.editSpu.spu_theme_img,
         title: this.editSpu.title,
         subtitle: this.editSpu.subtitle,
         price: this.editSpu.price,
         tags: this.editSpu.tags,
-        online: this.editSpu.online
+        online: this.editSpu.online,
       },
+      max_num: 1,
       rules: {
         title: [{validator: validateTitle, trigger: 'blur', required: true}],
         subtitle: [{validator: validateSubTitle, trigger: 'blur', required: true}],
-        price: [{validator: validatePrice, trigger: 'blur', required: true}]
+        price: [{validator: validatePrice, trigger: 'blur', required: true}],
+        minWidth: 100,
+        minHeight: 100,
+        maxSize: 5,
       }
     }
   },
@@ -89,6 +100,7 @@ export default {
     },
     // 提交按钮
     async submitForm() {
+      this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
       const res = await spu.updateSpu(this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
