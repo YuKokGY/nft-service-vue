@@ -57,21 +57,21 @@
 </template>
 
 <script>
-import LinTable from '@/component/base/table/lin-table'
-import spu from '@/model/spu'
-import SpuModify from '@/view/spu/spu-modify'
+  import LinTable from '@/component/base/table/lin-table'
+  import spu from '@/model/spu'
+  import SpuModify from '@/view/spu/spu-modify'
 
-export default {
-  components: {SpuModify, LinTable},
-  data() {
-    return {
-      refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
-      total_nums: 0, // 分组内的用户总数
-      currentPage: 1, // 默认获取第一页的数据
-      pageCount: 10, // 每页10条数据
-      pagination: true,
-      tableColumn: [
-        {prop: 'title', label: '商品名称'},
+  export default {
+    components: {SpuModify, LinTable},
+    data() {
+      return {
+        refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
+        total_nums: 0, // 分组内的用户总数
+        currentPage: 1, // 默认获取第一页的数据
+        pageCount: 10, // 每页10条数据
+        pagination: true,
+        tableColumn: [
+          {prop: 'title', label: '商品名称'},
         {prop: 'subtitle', label: '商品描述'},
         {prop: 'price', label: '商品价格'},
         {prop: 'tags', label: '商品标签'}
@@ -108,10 +108,9 @@ export default {
     },
     async getSpuList(val) {
       const currentPage = this.currentPage - 1
-      if (val != null) {
         try {
           this.loading = true
-          const spuList = await spu.getSpuList(val, {count: this.pageCount, page: currentPage})
+          const spuList = await spu.postList('/cms/spu/get', val, {count: this.pageCount, page: currentPage})
           this.tableData = spuList.items
           this.total_nums = spuList.total
           this.loading = false
@@ -120,19 +119,6 @@ export default {
             this.tableData = []
           }
         }
-      } else {
-        try {
-          this.loading = true
-          const spuList = await spu.getSpuList({}, {count: this.pageCount, page: currentPage})
-          this.tableData = spuList.items
-          this.total_nums = spuList.total
-          this.loading = false
-        } catch (error) {
-          if (error.code === 10020) {
-            this.tableData = []
-          }
-        }
-      }
     },
     // 搜索框逻辑
     async searchWithTitle() {
@@ -145,10 +131,13 @@ export default {
     async datePick() {
       this.spuDo.online = null
       this.spuDo.title = null
-      // eslint-disable-next-line prefer-destructuring
-      this.spuDo.start_time = this.date[0]
-      // eslint-disable-next-line prefer-destructuring
-      this.spuDo.end_time = this.date[1]
+      if (this.date == null) {
+        this.spuDo.start_time = null
+        this.spuDo.end_time = null
+      } else {
+        this.spuDo.start_time = this.date[0]
+        this.spuDo.end_time = this.date[1]
+      }
       await this.getSpuList(this.spuDo)
     },
     // 选择框逻辑
@@ -169,7 +158,7 @@ export default {
         type: 'warning'
       }).then(async () => {
         this.loading = true
-        const res = await spu.deleteSpu(val.row.id)
+        const res = await spu.deleteSpu('/cms/spu/deleteSpu', val.row.id)
         this.loading = false
         if (res.code < window.MAX_SUCCESS_CODE) {
           await this.getSpuList()

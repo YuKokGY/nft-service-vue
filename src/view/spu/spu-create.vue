@@ -37,20 +37,20 @@
 </template>
 
 <script>
-import spu from '@/model/spu'
-import UploadImgs from '@/component/base/upload-image/index'
+  import spu from '@/model/spu'
+  import UploadImgs from '@/component/base/upload-image/index'
 
-export default {
-  components: {UploadImgs},
-  data() {
-    // 校验输入框不能为空
-    const validateTitle = (rule, value, callback) => {
-      if (value === '') {
-        return callback(new Error('商品名称不能为空'))
+  export default {
+    components: {UploadImgs},
+    data() {
+      // 校验输入框不能为空
+      const validateTitle = (rule, value, callback) => {
+        if (value === '') {
+          return callback(new Error('商品名称不能为空'))
+        }
+        callback()
       }
-      callback()
-    }
-    const validatePrice = (rule, value, callback) => {
+      const validatePrice = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('价格不能为空'))
       }
@@ -96,7 +96,7 @@ export default {
         this.form.online = 0
       }
       this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
-      const res = await spu.createSpu(this.form)
+      const res = await spu.createSpu('/cms/spu/createSpu', this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
         this.$router.push('/spu/list')

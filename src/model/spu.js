@@ -1,27 +1,46 @@
 // eslint-disable-next-line no-unused-vars
 import {post} from '@/lin/plugin/axios'
+import {get} from "../lin/plugin/axios";
 
 class Spu {
-  async getSpuList(info, {count = this.uCount, page = this.uPage}) {
-    const res = await post('cms/spu/get', info, {
+
+
+  async postList(url, info, {count = this.uCount, page = this.uPage}) {
+    if (info == null) {
+      info = {}
+    }
+    const res = await post(url, info, {
       count,
       page
     })
     return res
   }
 
-  async deleteSpu(id) {
-    const res = await post(`cms/spu/deleteSpu/${id}`)
+  async getList(url, {count = this.uCount, page = this.uPage}) {
+    const res = await get(url, {
+      count,
+      page
+    })
     return res
   }
 
-  async updateSpu(info) {
-    const res = await post('cms/spu/updateSpu', info)
+  async getById(url, id) {
+    const res = await get(`${url}/${id}`)
     return res
   }
 
-  async createSpu(info) {
-    const res = await post('cms/spu/createSpu', info)
+  async deleteSpu(url, id) {
+    const res = await post(`${url}/${id}`)
+    return res
+  }
+
+  async updateSpu(url, info) {
+    const res = await post(url, info)
+    return res
+  }
+
+  async createSpu(url, info) {
+    const res = await post(url, info)
     return res
   }
 }

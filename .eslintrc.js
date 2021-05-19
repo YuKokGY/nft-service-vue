@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
   },
   plugins: ['vue'],
-  extends: ['plugin:vue/essential', '@vue/airbnb'],
+  extends: [],
   rules: {
     'max-len': 0,
     camelcase: 0, // 变量可以用下划线

@@ -40,20 +40,20 @@
 </template>
 
 <script>
-import spu from '@/model/spu'
-import UploadImgs from '@/component/base/upload-image/index'
+  import spu from '@/model/spu'
+  import UploadImgs from '@/component/base/upload-image/index'
 
-export default {
-  components: {UploadImgs},
-  props: {
-    editSpu: {},
-  },
-  data() {
-    // 校验输入框不能为空
-    const validateTitle = (rule, value, callback) => {
-      if (value === '') {
-        return callback(new Error('商品名称不能为空'))
-      }
+  export default {
+    components: {UploadImgs},
+    props: {
+      editSpu: {},
+    },
+    data() {
+      // 校验输入框不能为空
+      const validateTitle = (rule, value, callback) => {
+        if (value === '') {
+          return callback(new Error('商品名称不能为空'))
+        }
       callback()
     }
     const validatePrice = (rule, value, callback) => {
@@ -101,7 +101,7 @@ export default {
     // 提交按钮
     async submitForm() {
       this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
-      const res = await spu.updateSpu(this.form)
+      const res = await spu.updateSpu('/cms/spu/updateSpu', this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
         this.$emit('editClose')
