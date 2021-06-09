@@ -101,7 +101,7 @@
     // 提交按钮
     async submitForm() {
       this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
-      const res = await spu.updateSpu('/cms/spu/updateSpu', this.form)
+      const res = await spu.update('/cms/spu/updateSpu', this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
         this.$emit('editClose')

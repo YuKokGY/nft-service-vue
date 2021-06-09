@@ -91,7 +91,7 @@
   },
   async created() {
     this.loading = true
-    await this.getSpuList()
+    await this.getList()
     this.operate = [
       {name: '编辑', func: 'handleEdit', type: 'primary'},
       {name: '删除', func: 'handleDelete', type: 'danger', permission: '删除商品'},
@@ -103,20 +103,20 @@
     async handleCurrentChange(val) {
       this.currentPage = val
       this.loading = true
-      await this.getSpuList(this.spuDo, 'changePage')
+      await this.getList(this.spuDo, 'changePage')
       this.loading = false
     },
-    async getSpuList(val) {
+    async getList(val) {
       const currentPage = this.currentPage - 1
-        try {
-          this.loading = true
-          const spuList = await spu.postList('/cms/spu/get', val, {count: this.pageCount, page: currentPage})
-          this.tableData = spuList.items
-          this.total_nums = spuList.total
-          this.loading = false
-        } catch (error) {
-          if (error.code === 10020) {
-            this.tableData = []
+      try {
+        this.loading = true
+        const spuList = await spu.postList('/cms/spu/get', val, {count: this.pageCount, page: currentPage})
+        this.tableData = spuList.items
+        this.total_nums = spuList.total
+        this.loading = false
+      } catch (error) {
+        if (error.code === 10020) {
+          this.tableData = []
           }
         }
     },
@@ -125,7 +125,7 @@
       this.spuDo.online = null
       this.spuDo.start_time = null
       this.spuDo.end_time = null
-      await this.getSpuList(this.spuDo)
+      await this.getList(this.spuDo)
     },
     // 时间选择器逻辑
     async datePick() {
@@ -138,7 +138,7 @@
         this.spuDo.start_time = this.date[0]
         this.spuDo.end_time = this.date[1]
       }
-      await this.getSpuList(this.spuDo)
+      await this.getList(this.spuDo)
     },
     // 选择框逻辑
     async changeSelect() {
@@ -146,9 +146,9 @@
       this.spuDo.start_time = null
       this.spuDo.end_time = null
       if (this.spuDo.online === null) {
-        await this.getSpuList()
+        await this.getList()
       }
-      await this.getSpuList(this.spuDo)
+      await this.getList(this.spuDo)
     },
     // 删除按钮逻辑
     handleDelete(val) {
@@ -158,10 +158,10 @@
         type: 'warning'
       }).then(async () => {
         this.loading = true
-        const res = await spu.deleteSpu('/cms/spu/deleteSpu', val.row.id)
+        const res = await spu.delete('/cms/spu/deleteSpu', val.row.id)
         this.loading = false
         if (res.code < window.MAX_SUCCESS_CODE) {
-          await this.getSpuList()
+          await this.getList()
           this.$message({
             type: 'success',
             message: `${res.message}`
@@ -179,7 +179,7 @@
     // 关闭页面
     editClose() {
       this.showEdit = false
-      this.getSpuList(this.spuDo)
+      this.getList(this.spuDo)
     }
   }
 }

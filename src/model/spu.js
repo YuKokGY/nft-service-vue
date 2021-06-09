@@ -29,17 +29,17 @@ class Spu {
     return res
   }
 
-  async deleteSpu(url, id) {
+  async delete(url, id) {
     const res = await post(`${url}/${id}`)
     return res
   }
 
-  async updateSpu(url, info) {
+  async update(url, info) {
     const res = await post(url, info)
     return res
   }
 
-  async createSpu(url, info) {
+  async create(url, info) {
     const res = await post(url, info)
     return res
   }

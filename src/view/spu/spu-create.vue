@@ -96,7 +96,7 @@
         this.form.online = 0
       }
       this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
-      const res = await spu.createSpu('/cms/spu/createSpu', this.form)
+      const res = await spu.create('/cms/spu/createSpu', this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
         this.$router.push('/spu/list')
