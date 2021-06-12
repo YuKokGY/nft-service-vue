@@ -2,7 +2,7 @@
 import {post} from '@/lin/plugin/axios'
 import {get} from "../lin/plugin/axios";
 
-class Spu {
+class BaseModel {
 
 
   async postList(url, info, {count = this.uCount, page = this.uPage}) {
@@ -45,4 +45,4 @@ class Spu {
   }
 }
 
-export default new Spu()
+export default new BaseModel()
