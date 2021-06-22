@@ -15,7 +15,6 @@
       @current-change="handleCurrentChange"
       @selection-change="handleSelectionChange"
       @select-all="selectAll"
-      @row-click="rowClick"
     >
       <el-table-column v-if="type" :type="type" width="55"></el-table-column>
       <el-table-column v-if="index" :index="currentIndex" :type="index" width="55"></el-table-column>
@@ -267,10 +266,11 @@ export default {
       this.selectedTableData = JSON.parse(sessionStorage.getItem('selectedTableData'))
       // 一条数据都没选中
       if (this.selectedTableData.length === 0) {
-        this.selectedTableData = this.selectedTableData.concat(val)
+        this.selectedTableData = val
         this.$emit('selection-change', this.selectedTableData)
         this.oldVal = [...val]
         sessionStorage.setItem('selectedTableData', JSON.stringify(this.selectedTableData))
+        console.log(this.selectedTableData)
         return
       }
       // 判断是选中数据还是取消选中
@@ -278,11 +278,13 @@ export default {
         const delKey = oldValKeys.filter(item => !valKeys.includes(item))
         this.selectedTableData = this.selectedTableData.filter(item => !delKey.includes(item.key))
         this.$emit('selection-change', this.selectedTableData)
+        console.log(this.selectedTableData)
       } else {
         const addKey = valKeys.filter(item => !oldValKeys.includes(item))
         const addVal = val.filter(item => addKey.includes(item.key))
         this.selectedTableData = this.selectedTableData.concat(addVal)
         this.$emit('selection-change', this.selectedTableData)
+        console.log(this.selectedTableData)
       }
       sessionStorage.setItem('selectedTableData', JSON.stringify(this.selectedTableData))
       this.oldVal = [...val]

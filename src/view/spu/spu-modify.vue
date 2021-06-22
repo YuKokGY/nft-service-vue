@@ -40,7 +40,7 @@
 </template>
 
 <script>
-  import spu from '@/model/spu'
+  import spu from '@/model/baseModel'
   import UploadImgs from '@/component/base/upload-image/index'
 
   export default {
