@@ -31,51 +31,40 @@
       <!--表格-->
       <lin-table
         :operate="operate"
-        @selection-change="res => checkBoxData=res"
+        :pagination="{currentPage:currentPage,pageSize:pageCount,total:total_nums}"
         :table-column="tableColumn"
         :tableData="tableData"
+        @currentChange="handleCurrentChange"
         @handleDelete="handleDelete"
         @handleEdit="handleEdit"
+        @selection-change="checkBoxSelect"
         type="selection"
         v-loading="loading"
       >
       </lin-table>
-      <!--分页-->
-      <div class="pagination">
-        <el-pagination
-          :background="true"
-          :current-page="currentPage"
-          :page-size="pageCount"
-          :total="total_nums"
-          @current-change="handleCurrentChange"
-          layout="prev, pager, next, jumper"
-          v-if="refreshPagination"
-        >
-        </el-pagination>
-      </div>
     </div>
     <!--编辑页面-->
     <spu-modify :editSpu="tableData.row" @editClose="editClose" v-else></spu-modify>
   </div>
 </template>
 
-<script>var checkBoxData;
+<script>
 
-import LinTable from '@/component/base/table/lin-table'
-import spu from '@/model/baseModel'
-import SpuModify from '@/view/spu/spu-modify'
+  import LinTable from '@/component/base/table/lin-table'
+  import spu from '@/model/baseModel'
+  import SpuModify from '@/view/spu/spu-modify'
 
-export default {
-  components: {SpuModify, LinTable},
-  data() {
-    return {
-      refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
-      total_nums: 0, // 分组内的用户总数
-      currentPage: 1, // 默认获取第一页的数据
-      pageCount: 10, // 每页10条数据
-      pagination: true,
-      tableColumn: [
-        {prop: 'title', label: '商品名称'},
+  export default {
+    components: {SpuModify, LinTable},
+    data() {
+      return {
+        refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
+        total_nums: 0, // 分组内的用户总数
+        currentPage: 1, // 默认获取第一页的数据
+        pageCount: 10, // 每页10条数据
+        pagination: true,
+        tableColumn: [
+          {prop: 'title', label: '商品名称'},
         {prop: 'subtitle', label: '商品描述'},
         {prop: 'price', label: '商品价格'},
         {prop: 'tags', label: '商品标签'}
@@ -106,6 +95,7 @@ export default {
   methods: {
     // 切换table页
     async handleCurrentChange(val) {
+      console.log(val)
       this.currentPage = val
       this.loading = true
       await this.getList(this.spuDo, 'changePage')
@@ -179,6 +169,10 @@ export default {
     editClose() {
       this.showEdit = false
       this.getList(this.spuDo)
+    },
+    //表格多选
+    checkBoxSelect(val) {
+      this.checkBoxData = val
     }
   }
 }

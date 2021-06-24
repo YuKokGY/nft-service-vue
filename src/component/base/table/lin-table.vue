@@ -245,7 +245,7 @@ export default {
       // 已选中的数据打勾
       this.selectedTableData.forEach(item => {
         for (let i = 0; i < this.currentData.length; i++) {
-          if (this.currentData[i].key === item.key) {
+          if (this.currentData[i].id === item.id) {
             // 切换页码重新计算oldVal
             this.oldVal.push(this.currentData[i])
             // 需要打勾的数据
@@ -261,30 +261,27 @@ export default {
     },
     // checkbox触发函数
     handleSelectionChange(val) {
-      const valKeys = val.map(item => item.key)
-      const oldValKeys = this.oldVal.map(item => item.key)
+      const valKeys = val.map(item => item.id)
+      const oldValKeys = this.oldVal.map(item => item.id)
       this.selectedTableData = JSON.parse(sessionStorage.getItem('selectedTableData'))
       // 一条数据都没选中
       if (this.selectedTableData.length === 0) {
-        this.selectedTableData = val
+        this.selectedTableData = this.selectedTableData.concat(val)
         this.$emit('selection-change', this.selectedTableData)
         this.oldVal = [...val]
         sessionStorage.setItem('selectedTableData', JSON.stringify(this.selectedTableData))
-        console.log(this.selectedTableData)
         return
       }
       // 判断是选中数据还是取消选中
       if (valKeys.length < oldValKeys.length) {
         const delKey = oldValKeys.filter(item => !valKeys.includes(item))
-        this.selectedTableData = this.selectedTableData.filter(item => !delKey.includes(item.key))
+        this.selectedTableData = this.selectedTableData.filter(item => !delKey.includes(item.id))
         this.$emit('selection-change', this.selectedTableData)
-        console.log(this.selectedTableData)
       } else {
         const addKey = valKeys.filter(item => !oldValKeys.includes(item))
-        const addVal = val.filter(item => addKey.includes(item.key))
+        const addVal = val.filter(item => addKey.includes(item.id))
         this.selectedTableData = this.selectedTableData.concat(addVal)
         this.$emit('selection-change', this.selectedTableData)
-        console.log(this.selectedTableData)
       }
       sessionStorage.setItem('selectedTableData', JSON.stringify(this.selectedTableData))
       this.oldVal = [...val]
