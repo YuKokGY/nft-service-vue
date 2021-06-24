@@ -4,7 +4,7 @@
       <div class="header">
         <div class="title">
           <span>商品列表</span>
-          <el-select @change="changeSelect" class="search" placeholder="上下架筛选" size="medium" v-model="spuDo.online">
+          <el-select @change="changeSelect" class="search" placeholder="上下架筛选" size="medium" v-model="modelDO.online">
             <el-option
               :key="item.value"
               :label="item.label"
@@ -25,7 +25,7 @@
           </el-date-picker>
           <el-input @blur="searchWithTitle" @clear="clearAll" autocomplete="off" class="input" clearable
                     placeholder="搜索商品"
-                    prefix-icon="el-icon-search" size="medium" v-model="spuDo.title"></el-input>
+                    prefix-icon="el-icon-search" size="medium" v-model="modelDO.title"></el-input>
         </div>
       </div>
       <!--表格-->
@@ -62,7 +62,6 @@
         total_nums: 0, // 分组内的用户总数
         currentPage: 1, // 默认获取第一页的数据
         pageCount: 10, // 每页10条数据
-        pagination: true,
         tableColumn: [
           {prop: 'title', label: '商品名称'},
         {prop: 'subtitle', label: '商品描述'},
@@ -75,12 +74,12 @@
       operate: [],
       isOnline: [{label: '所有', value: null}, {label: '上架', value: 1}, {label: '下架', value: 0}],
       date: [],
-      spuDo: {
-        online: null,
-        title: '',
-        start_time: null,
-        end_time: null
-      }
+        modelDO: {
+          online: null,
+          title: '',
+          start_time: null,
+          end_time: null
+        }
     }
   },
   async created() {
@@ -98,7 +97,7 @@
       console.log(val)
       this.currentPage = val
       this.loading = true
-      await this.getList(this.spuDo, 'changePage')
+      await this.getList(this.modelDO, 'changePage')
       this.loading = false
     },
     async getList(val) {
@@ -117,29 +116,29 @@
     },
     // 搜索框逻辑
     async searchWithTitle() {
-      await this.getList(this.spuDo)
+      await this.getList(this.modelDO)
     },
     async clearAll() {
-      this.spuDo.title = null
-      await this.getList(this.spuDo)
+      this.modelDO.title = null
+      await this.getList(this.modelDO)
     },
     // 时间选择器逻辑
     async datePick() {
       if (this.date == null) {
-        this.spuDo.start_time = null
-        this.spuDo.end_time = null
+        this.modelDO.start_time = null
+        this.modelDO.end_time = null
       } else {
-        this.spuDo.start_time = this.date[0]
-        this.spuDo.end_time = this.date[1]
+        this.modelDO.start_time = this.date[0]
+        this.modelDO.end_time = this.date[1]
       }
-      await this.getList(this.spuDo)
+      await this.getList(this.modelDO)
     },
     // 选择框逻辑
     async changeSelect() {
-      if (this.spuDo.online === null) {
+      if (this.modelDO.online === null) {
         await this.getList()
       }
-      await this.getList(this.spuDo)
+      await this.getList(this.modelDO)
     },
     // 删除按钮逻辑
     handleDelete(val) {
@@ -168,7 +167,7 @@
     // 关闭页面
     editClose() {
       this.showEdit = false
-      this.getList(this.spuDo)
+      this.getList(this.modelDO)
     },
     //表格多选
     checkBoxSelect(val) {
