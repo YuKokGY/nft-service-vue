@@ -94,7 +94,6 @@
   methods: {
     // 切换table页
     async handleCurrentChange(val) {
-      console.log(val)
       this.currentPage = val
       this.loading = true
       await this.getList(this.modelDO, 'changePage')
