@@ -3,7 +3,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import {Radar} from '@antv/g2plot'
 
 export default {

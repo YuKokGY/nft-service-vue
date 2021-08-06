@@ -3,7 +3,7 @@ import pluginsConfig from './plugin'
 import Utils from '@/lin/util/util'
 import spuConfig from './spu'
 
-// eslint-disable-next-line import/no-mutable-exports
+
 let homeRouter = [
   {
     title: '关于我们',

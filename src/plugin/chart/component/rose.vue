@@ -3,7 +3,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import {Rose} from '@antv/g2plot'
 
 export default {
