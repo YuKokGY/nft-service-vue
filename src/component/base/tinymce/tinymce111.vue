@@ -7,55 +7,56 @@
 </template>
 
 <script>
-  // 引入组件
-  import Editor from '@tinymce/tinymce-vue'
-  // 引入富文本编辑器主题的js和css
-  import 'tinymce/themes/silver/theme.min.js'
-  import 'tinymce/skins/ui/oxide/skin.min.css'
-  // 扩展插件
-  import 'tinymce/plugins/image'
-  import 'tinymce/plugins/media'
-  import 'tinymce/plugins/link'
-  import 'tinymce/plugins/code'
-  import 'tinymce/plugins/table'
-  import 'tinymce/plugins/lists'
-  import 'tinymce/plugins/paste'
-  import 'tinymce/plugins/imagetools'
-  import 'tinymce/plugins/print'
-  import 'tinymce/plugins/preview'
-  import 'tinymce/plugins/searchreplace'
-  import 'tinymce/plugins/autolink'
-  import 'tinymce/plugins/directionality'
-  import 'tinymce/plugins/visualblocks'
-  import 'tinymce/plugins/visualchars'
-  import 'tinymce/plugins/fullscreen'
-  import 'tinymce/plugins/template'
-  import 'tinymce/plugins/codesample'
-  import 'tinymce/plugins/charmap'
-  import 'tinymce/plugins/hr'
-  import 'tinymce/plugins/pagebreak'
-  import 'tinymce/plugins/nonbreaking'
-  import 'tinymce/plugins/anchor'
-  import 'tinymce/plugins/insertdatetime'
-  import 'tinymce/plugins/advlist'
-  import 'tinymce/plugins/wordcount'
-  import 'tinymce/plugins/textpattern'
-  import 'tinymce/plugins/help'
-  import 'tinymce/plugins/emoticons'
-  import 'tinymce/plugins/autosave'
+// 引入组件
+import 'tinymce/tinymce'
+import Editor from '@tinymce/tinymce-vue'
+// 引入富文本编辑器主题的js和css
+import 'tinymce/themes/silver/theme.min.js'
+import 'tinymce/skins/ui/oxide/skin.min.css'
+// 扩展插件
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/media'
+import 'tinymce/plugins/link'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/paste'
+import 'tinymce/plugins/imagetools'
+import 'tinymce/plugins/print'
+import 'tinymce/plugins/preview'
+import 'tinymce/plugins/searchreplace'
+import 'tinymce/plugins/autolink'
+import 'tinymce/plugins/directionality'
+import 'tinymce/plugins/visualblocks'
+import 'tinymce/plugins/visualchars'
+import 'tinymce/plugins/fullscreen'
+import 'tinymce/plugins/template'
+import 'tinymce/plugins/codesample'
+import 'tinymce/plugins/charmap'
+import 'tinymce/plugins/hr'
+import 'tinymce/plugins/pagebreak'
+import 'tinymce/plugins/nonbreaking'
+import 'tinymce/plugins/anchor'
+import 'tinymce/plugins/insertdatetime'
+import 'tinymce/plugins/advlist'
+import 'tinymce/plugins/wordcount'
+import 'tinymce/plugins/textpattern'
+import 'tinymce/plugins/help'
+import 'tinymce/plugins/emoticons'
+import 'tinymce/plugins/autosave'
 
-  import 'tinymce/plugins/autoresize'
-  //import 'tinymce/plugins/formatpainter'
+import 'tinymce/plugins/autoresize'
+//import 'tinymce/plugins/formatpainter'
 
 
-  export default {
-    name: 'ActiveConfig',
-    props: {
-      defaultContent: {
-        type: String,
-        default: '',
-      },
-      height: {
+export default {
+  name: 'ActiveConfig',
+  props: {
+    defaultContent: {
+      type: String,
+      default: '',
+    },
+    height: {
         type: Number,
         default: 500,
       },
