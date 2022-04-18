@@ -5,9 +5,13 @@
       v-loading="loading"
       :border="border"
       :data="currentData"
+      max-height="520"
+      :row-style="{ height: '0px' }"
+      :header-row-style="{ height: '0px' }"
       :element-loading-background="loadingBG"
       :element-loading-spinner="loadingIcon"
       :element-loading-text="loadingText"
+      :header-cell-style="{ background: '#e6e8ee', color: '#606266' }"
       :highlight-current-row="highlightCurrentRow ? true : false"
       :row-class-name="rowClassName"
       row-key="id"
@@ -27,37 +31,51 @@
         :fixed="item.fixed ? item.fixed : false"
         :formatter="item.formatter ? item.formatter : null"
         :label="item.label"
+        :min-width="200"
         :prop="item.prop"
         :show-overflow-tooltip="true"
-        :sortable="item.sortable ? item.sortable : false"
+        sortable
         :width="item.width ? item.width : ''"
-      ></el-table-column>
-      <el-table-column v-if="operate.length > 0" fixed="right" label="操作" width="275">
+      >
+      </el-table-column>
+
+      <el-table-column
+        v-if="operate.length > 0"
+        fixed="right"
+        label="操作"
+        align="center"
+        :width="operateWidth ? operateWidth : '300'"
+      >
         <template slot-scope="scope">
           <el-button
             v-for="(item, index) in operate"
             :key="index"
             v-permission="{ permission: item.permission ? item.permission : '', type: 'disabled' }"
-            :type="item.type"
+            :type="item.buttonType ? item.buttonType(scope.row) : item.type"
+            :disabled="item.condition ? !item.condition(scope.row) : false"
             plain
             size="mini"
             @click.native.prevent.stop="buttonMethods(item.func, scope.$index, scope.row)"
-          >{{ item.name }}
-          </el-button
-          >
+          >{{ item.buttonName ? item.buttonName(scope.row) : item.name }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      v-if="pagination"
-      :current-page="pagination.currentPage ? pagination.currentPage : 1"
-      :page-size="pagination.pageSize ? pagination.pageSize : 10"
-      :total="pagination.total ? pagination.total : null"
-      background
-      class="pagination"
-      layout="prev, pager, next"
-      @current-change="currentChange"
-    ></el-pagination>
+
+    <el-row class="div_bottom">
+      <el-pagination
+        v-if="pagination"
+        :current-page="pagination.currentPage ? pagination.currentPage : 1"
+        :page-size="pagination.pageSize ? pagination.pageSize : 10"
+        :total="pagination.total ? pagination.total : null"
+        :page-sizes="[10, 20, 30, 40, 50, 100]"
+        background
+        class="pagination"
+        layout="total, sizes, prev, pager, next, jumper"
+        @current-change="currentChange"
+        @size-change="sizeChange"
+      ></el-pagination>
+    </el-row>
   </div>
 </template>
 
@@ -117,6 +135,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    operateWidth: {
+      // 操作宽度
+      type: Number,
+      default: '300',
+    },
     loadingText: {
       // 动画提示
       type: String,
@@ -140,7 +163,7 @@ export default {
     border: {
       // 边框
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   data() {
@@ -158,8 +181,7 @@ export default {
       pageCount: 10, // 每页10条数据
     }
   },
-  created() {
-  },
+  created() {},
   beforeMount() {
     // 先放在session里，因为每次切换页码table都会重新渲染，之前选中都数据就丢失了  sessionstorage在create里面打包会提示undefined
     sessionStorage.setItem('selectedTableData', JSON.stringify([]))
@@ -168,20 +190,29 @@ export default {
     // 开发者自定义的函数
     buttonMethods(func, index, row) {
       const _this = this
-      const {methods} = this.$options
+      const { methods } = this.$options
       methods[func](_this, index, row)
     },
     // 行内编辑
     handleEdit(_this, index, row) {
-      _this.$emit('handleEdit', {index, row})
+      _this.$emit('handleEdit', { index, row })
+    },
+    handleInfo(_this, index, row) {
+      _this.$emit('handleInfo', { index, row })
+    },
+    handleExport(_this, index, row) {
+      _this.$emit('handleExport', { index, row })
     },
     // 行内删除
     handleDelete(_this, index, row) {
-      _this.$emit('handleDelete', {index, row})
+      _this.$emit('handleDelete', { index, row })
+    },
+    handleClick(_this, index, row) {
+      _this.$emit('handleClick', { index, row })
     },
     // 行内跳转页面
     goToGroupEditPage(_this, index, row) {
-      _this.$emit('goToGroupEditPage', {index, row})
+      _this.$emit('goToGroupEditPage', { index, row })
     },
     // 多选-选中checkbox
     toggleSelection(rows, flag) {
@@ -197,10 +228,11 @@ export default {
     selectAll(val) {
       this.oldKey = val.map(item => item.key)
     },
+
     // 单选
     handleCurrentChange(val, oldVal) {
       this.currentRow = val
-      this.$emit('handleCurrentChange', {val, oldVal})
+      this.$emit('handleCurrentChange', { val, oldVal })
     },
     // 单击某一行
     rowClick(row) {
@@ -217,10 +249,7 @@ export default {
         this.oldKey = this.oldKey.filter(item => item !== row.key)
         const data = this.oldVal.filter(item => item.key !== row.key)
         this.handleSelectionChange(data)
-        this.toggleSelection(
-          this.currentData.filter(item => item.key === row.key),
-          false,
-        )
+        this.toggleSelection(this.currentData.filter(item => item.key === row.key), false)
       }
       // 选中-单选
       if (this.currentOldRow && this.currentOldRow.key === row.key) {
@@ -231,6 +260,11 @@ export default {
       }
       this.currentOldRow = row
     },
+
+    sizeChange(val) {
+      this.pagination.pageSize = val
+      this.$emit('sizeChange', val)
+    },
     // 切换当前页
     currentChange(page) {
       const currentSelectedData = []
@@ -238,8 +272,9 @@ export default {
       this.currentPage = page
       this.selectedTableData = JSON.parse(sessionStorage.getItem('selectedTableData'))
       this.currentData = this.tableData.filter(
-        (item, index) => index >= (this.currentPage - 1) * this.pagination.pageSize
-          && index < this.currentPage * this.pagination.pageSize,
+        (item, index) =>
+          index >= (this.currentPage - 1) * this.pagination.pageSize &&
+          index < this.currentPage * this.pagination.pageSize,
       ) // eslint-disable-line
       this.$emit('currentChange', page)
       // 已选中的数据打勾
@@ -395,7 +430,7 @@ export default {
 
 <style lang="scss" scoped>
 .lin-table {
-  position: relative;
+  position: initial;
 }
 
 .sort-input {
@@ -423,15 +458,24 @@ export default {
 }
 
 .pagination {
-  display: flex;
   justify-content: flex-end;
-  margin-right: -10px;
-  margin-top: 15px;
+  margin: 20px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
 }
 </style>
 
 <style>
 .lin-table .rowClassName {
   cursor: move !important;
+}
+
+.el-table thead tr th .cell {
+  color: #333;
+  font-weight: 1000;
+  font-size: 15px;
+  font-family: 微软雅黑;
 }
 </style>

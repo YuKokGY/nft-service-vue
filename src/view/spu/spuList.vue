@@ -34,9 +34,11 @@
         :pagination="{currentPage:currentPage,pageSize:pageCount,total:total_nums}"
         :table-column="tableColumn"
         :tableData="tableData"
+        :operate-width="300"
         @currentChange="handleCurrentChange"
         @handleDelete="handleDelete"
         @handleEdit="handleEdit"
+        @handleInfo="handleInfo"
         @selection-change="checkBoxSelect"
         type="selection"
         v-loading="loading"
@@ -53,6 +55,7 @@
   import LinTable from '@/component/base/table/lin-table'
   import spu from '@/model/baseModel'
   import SpuModify from '@/view/spu/spu-modify'
+  import baseModel from "@/model/baseModel";
 
   export default {
     components: {SpuModify, LinTable},
@@ -72,7 +75,7 @@
       checkBoxData: [],
       showEdit: false,
       operate: [],
-      isOnline: [{label: '所有', value: null}, {label: '上架', value: 1}, {label: '下架', value: 0}],
+      isOnline: [{label: '所有', value: null}, {label: '上架', value: true}, {label: '下架', value: false}],
       date: [],
         modelDO: {
           online: null,
@@ -87,6 +90,14 @@
     await this.getList()
     this.operate = [
       {name: '编辑', func: 'handleEdit', type: 'primary'},
+      {
+        func: 'handleInfo',
+        buttonType: row => (row.online !== false ? 'danger' : 'primary'),
+        buttonName: row => {
+          if (row.online === false) return '上架'
+          else return '下架'
+        },
+      },
       {name: '删除', func: 'handleDelete', type: 'danger', permission: '删除商品'},
     ]
     this.loading = false
@@ -162,6 +173,16 @@
     handleEdit(val) {
       this.showEdit = true
       this.tableData.row = val.row
+    },
+    async handleInfo(val){
+      const res = await baseModel.getById('/cms/spu/changeStatus',val.row.id)
+      if (res.code < window.MAX_SUCCESS_CODE) {
+        await this.getList()
+        this.$message({
+          type: 'success',
+          message: `${res.message}`
+        })
+      }
     },
     // 关闭页面
     editClose() {

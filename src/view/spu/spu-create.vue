@@ -23,7 +23,7 @@
               <el-input v-model="form.tags" placeholder="请填写商品标签" size="medium"></el-input>
             </el-form-item>
             <el-form-item label="是否上架" prop="online">
-              <el-switch v-model="form.online" active-value="上架" inactive-value="下架"></el-switch>
+              <el-switch v-model="form.online" :active-value="true" :inactive-value="false"></el-switch>
             </el-form-item>
             <el-form-item class="submit">
               <el-button type="primary" @click="submitForm('form')">保 存</el-button>
@@ -65,7 +65,7 @@
     return {
       loading: false,
       form: {
-        spu_theme_img: '',
+        img: '',
         title: '',
         subtitle: '',
         price: '',
@@ -95,7 +95,7 @@
       } else {
         this.form.online = 0
       }
-      this.form.spu_theme_img = (await this.$refs.uploadEle3.getValue())[0].display
+      this.form.img = (await this.$refs.uploadEle3.getValue())[0].display
       const res = await spu.create('/cms/spu/createSpu', this.form)
       if (res.code < window.MAX_SUCCESS_CODE) {
         this.$message.success(`${res.message}`)
