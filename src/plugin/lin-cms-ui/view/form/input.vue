@@ -55,9 +55,8 @@
           <el-col :span="12">
             <el-input v-model="input4" placeholder="请输入内容" size="medium">
               <template slot="prepend"
-              >Http://
-              </template
-              >
+                >Http://
+              </template>
             </el-input>
           </el-col>
         </el-row>
@@ -65,9 +64,8 @@
           <el-col :span="12">
             <el-input v-model="input5" placeholder="请输入内容" size="medium">
               <template slot="append"
-              >.com
-              </template
-              >
+                >.com
+              </template>
             </el-input>
           </el-col>
         </el-row>
@@ -191,8 +189,7 @@ export default {
   // },
   methods: {
     // 执行获取数据等初始化动作
-    init() {
-    },
+    init() {},
   },
 }
 </script>
@@ -200,7 +197,7 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/style/container.scss';
 
-.input-with-select /deep/ .el-input-group__prepend {
+.input-with-select ::v-deep .el-input-group__prepend {
   background-color: #fff;
   width: 100px;
   border-top: 1px solid #dcdfe6;

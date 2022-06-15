@@ -9,7 +9,7 @@
             <div class="quantity">11,590</div>
           </div>
         </div>
-        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png"/></div>
+        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png" /></div>
       </div>
       <div class="quantity-item">
         <div class="quantity-detail">
@@ -19,7 +19,7 @@
             <div class="quantity">51,862</div>
           </div>
         </div>
-        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png"/></div>
+        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png" /></div>
       </div>
       <div class="quantity-item">
         <div class="quantity-detail">
@@ -29,7 +29,7 @@
             <div class="quantity">1,862</div>
           </div>
         </div>
-        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png"/></div>
+        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png" /></div>
       </div>
       <div class="quantity-item">
         <div class="quantity-detail">
@@ -39,13 +39,13 @@
             <div class="quantity">1,323</div>
           </div>
         </div>
-        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png"/></div>
+        <div class="quantity-icon"><img alt="" src="../../assets/image/about/icon.png" /></div>
       </div>
     </div>
     <div class="information">
       <div class="personal">
         <div class="personal-title">个人信息</div>
-        <img class="personal-avatar" src="../../assets/image/about/avatar.png"/>
+        <img class="personal-avatar" src="../../assets/image/about/avatar.png" />
         <div class="personal-influence">
           <div class="personal-influence-item">
             <div class="personal-influence-num color1">5411</div>
@@ -73,7 +73,7 @@
         <div class="article-title">文章</div>
         <div class="article-list">
           <div class="article-item" @click="handleArticle('https://opensource.guide/how-to-contribute/')">
-            <img alt="" class="article-thumb" src="../../assets/image/about/open-source.jpg"/>
+            <img alt="" class="article-thumb" src="../../assets/image/about/open-source.jpg" />
             <div class="article-detail">
               <p class="article-detail-title">How to Contribute to Open Source?</p>
               <div class="article-detail-content">
@@ -95,7 +95,7 @@
             </div>
           </div>
           <div class="article-item" @click="handleArticle('https://www.zhihu.com/question/269033309')">
-            <img alt="" class="article-thumb" src="../../assets/image/about/open-source.jpg"/>
+            <img alt="" class="article-thumb" src="../../assets/image/about/open-source.jpg" />
             <div class="article-detail article-last">
               <p class="article-detail-title">为什么程序员们愿意在GitHub上开源自己的成果给别人免费使用和学习？</p>
               <div class="article-detail-content">
@@ -438,13 +438,13 @@ export default {
         margin-bottom: 20px;
       }
 
-      .personal-tabs /deep/ .is-top {
+      .personal-tabs ::v-deep .is-top {
         width: 320px;
         display: flex;
         justify-content: space-around;
       }
 
-      .personal-tabs /deep/ .el-tabs__content {
+      .personal-tabs ::v-deep .el-tabs__content {
         text-indent: 20px;
       }
     }

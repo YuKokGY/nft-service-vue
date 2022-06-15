@@ -4,7 +4,7 @@
     <div class="header">
       <div class="header-left"><p class="title">豆瓣电影TOP250</p></div>
       <div class="header-right">
-        <lin-search placeholder="请输入电影名" @query="onQueryChange"/>
+        <lin-search placeholder="请输入电影名" @query="onQueryChange" />
         <div style="margin-left:30px">
           <el-button type="primary" @click="dialogTableVisible = !dialogTableVisible">列操作</el-button>
         </div>
@@ -53,7 +53,7 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <div class="summary">
-              <img :src="props.row.thumb" alt/>
+              <img :src="props.row.thumb" alt />
               <el-form class="demo-table-expand" inline label-position="left">
                 <el-form-item label="电影名">
                   <span>{{ props.row.title }}</span>
@@ -145,9 +145,8 @@
               plain
               size="mini"
               @click.native.prevent.stop="buttonMethods(item.func, scope.$index, scope.row)"
-            >{{ item.name }}
-            </el-button
-            >
+              >{{ item.name }}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -173,7 +172,7 @@
 
 <script>
 import LinSearch from '@/component/base/search/lin-search'
-import {tableColumn} from './data'
+import { tableColumn } from './data'
 import movie from '../../model/movie.js'
 
 export default {
@@ -211,8 +210,8 @@ export default {
     this.tableColumn = tableColumn
     // 操作栏
     this.operate = [
-      {name: '编辑', func: 'handleEdit', type: 'primary'},
-      {name: '删除', func: 'handleDelete', type: 'danger'},
+      { name: '编辑', func: 'handleEdit', type: 'primary' },
+      { name: '删除', func: 'handleDelete', type: 'danger' },
     ]
     // 定制列
     this.tempCheckList = tableColumn.map(v => v.label).slice()
@@ -239,8 +238,7 @@ export default {
     handleChange() {
       this.filterTableColumn = tableColumn.filter(v => this.checkList.indexOf(v.label) > -1)
     },
-    showRowOperateModal() {
-    },
+    showRowOperateModal() {},
 
     // 变更排序
     handleSort(val, rowData) {
@@ -315,7 +313,7 @@ export default {
     // 操作列
     buttonMethods(func, index, row) {
       const self = this
-      const {methods} = this.$options
+      const { methods } = this.$options
       methods[func](self, index, row)
     },
     handleEdit(self, index, row) {
@@ -522,16 +520,16 @@ export default {
 }
 
 // dialog
-.tableSample /deep/ .el-dialog__footer {
+.tableSample ::v-deep .el-dialog__footer {
   text-align: left;
   padding-left: 30px;
 }
 
-.tableSample /deep/ .el-dialog__header {
+.tableSample ::v-deep .el-dialog__header {
   padding-left: 30px;
 }
 
-.tableSample /deep/ .el-dialog__body {
+.tableSample ::v-deep .el-dialog__body {
   padding: 30px;
 }
 </style>

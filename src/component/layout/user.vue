@@ -2,15 +2,15 @@
   <div class="user">
     <el-dropdown>
       <span class="el-dropdown-link">
-        <div class="nav-avatar"><img :src="user.avatar || defaultAvatar" alt="头像"/></div>
+        <div class="nav-avatar"><img :src="user.avatar || defaultAvatar" alt="头像" /></div>
       </span>
       <el-dropdown-menu slot="dropdown" class="user-box">
         <div class="user-info">
           <div class="avatar" title="点击修改头像">
-            <img :src="user.avatar || defaultAvatar" alt="头像"/>
+            <img :src="user.avatar || defaultAvatar" alt="头像" />
             <label class="mask">
               <i class="iconfont icon-icon-test" style="font-size: 20px;"></i>
-              <input ref="avatarInput" accept="image/*" type="file" @change="fileChange"/>
+              <input ref="avatarInput" accept="image/*" type="file" @change="fileChange" />
             </label>
           </div>
           <div class="text">
@@ -24,7 +24,7 @@
               @blur="blur"
             ></el-input>
           </div>
-          <img class="corner" src="../../assets/image/user/corner.png"/>
+          <img class="corner" src="../../assets/image/user/corner.png" />
         </div>
         <ul class="dropdown-box">
           <li class="password" @click="goToCenter">
@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Vue from 'vue'
 import Croppa from 'vue-croppa'
 import User from '@/lin/model/user'
@@ -161,9 +161,9 @@ export default {
         confirm_password: '',
       },
       rules: {
-        old_password: [{validator: oldPassword, trigger: 'blur', required: true}],
-        new_password: [{validator: validatePassword, trigger: 'blur', required: true}],
-        confirm_password: [{validator: validatePassword2, trigger: 'blur', required: true}],
+        old_password: [{ validator: oldPassword, trigger: 'blur', required: true }],
+        new_password: [{ validator: validatePassword, trigger: 'blur', required: true }],
+        confirm_password: [{ validator: validatePassword2, trigger: 'blur', required: true }],
       },
       cropRule: {
         width,
@@ -304,7 +304,7 @@ export default {
     },
     async blur() {
       if (this.nickname) {
-        const {user} = this.$store.state
+        const { user } = this.$store.state
         if (this.nickname !== user.nickname && this.nickname !== '佚名') {
           this.$axios({
             method: 'put',
@@ -334,7 +334,7 @@ export default {
       this.nicknameChanged = false
     },
     init() {
-      const {user} = this.$store.state
+      const { user } = this.$store.state
       this.username = user ? user.username : '未登录'
       this.groupName = user.groupName ? user.groupName : '超级管理员'
       this.nickname = user && user.nickname ? user.nickname : '佚名'
@@ -370,7 +370,7 @@ export default {
             this.dialogFormVisible = false
             setTimeout(() => {
               this.loginOut()
-              const {origin} = window.location
+              const { origin } = window.location
               window.location.href = origin
             }, 1000)
           }
@@ -394,12 +394,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-dialog /deep/ .el-dialog .el-dialog__header {
+.user-dialog ::v-deep .el-dialog .el-dialog__header {
   border-bottom: 1px solid #dae1ed;
   padding-bottom: 20px;
 }
 
-.user-dialog /deep/ .el-dialog .el-dialog__body {
+.user-dialog ::v-deep .el-dialog .el-dialog__body {
   padding-bottom: 00px;
 }
 

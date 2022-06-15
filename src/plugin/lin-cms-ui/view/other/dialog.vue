@@ -325,12 +325,10 @@ export default {
         .then(_ => {
           done()
         })
-        .catch(_ => {
-        })
+        .catch(_ => {})
     },
     // 执行获取数据等初始化动作
-    init() {
-    },
+    init() {},
   },
 }
 </script>
@@ -345,7 +343,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.dialogForm /deep/ .el-select {
+.dialogForm ::v-deep .el-select {
   width: 100%;
 }
 </style>

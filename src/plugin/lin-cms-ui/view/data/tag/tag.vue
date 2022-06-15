@@ -123,21 +123,21 @@ export default {
   data() {
     return {
       items: [
-        {type: '', label: '标签一'},
-        {type: 'success', label: '标签二'},
-        {type: 'info', label: '标签三'},
-        {type: 'danger', label: '标签四'},
-        {type: 'warning', label: '标签五'},
+        { type: '', label: '标签一' },
+        { type: 'success', label: '标签二' },
+        { type: 'info', label: '标签三' },
+        { type: 'danger', label: '标签四' },
+        { type: 'warning', label: '标签五' },
       ],
       dynamicTags: ['标签一', '标签二', '标签三'],
       inputVisible: false,
       inputValue: '',
       tags: [
-        {name: '标签一', type: ''},
-        {name: '标签二', type: 'success'},
-        {name: '标签三', type: 'info'},
-        {name: '标签四', type: 'warning'},
-        {name: '标签五', type: 'danger'},
+        { name: '标签一', type: '' },
+        { name: '标签二', type: 'success' },
+        { name: '标签三', type: 'info' },
+        { name: '标签四', type: 'warning' },
+        { name: '标签五', type: 'danger' },
       ],
       text: '',
       /* eslint-disable */
@@ -213,7 +213,7 @@ export default {
               margin-left: 10px;
               vertical-align: bottom;
             }
-            .input-new-tag /deep/ .el-input__inner {
+            .input-new-tag ::v-deep .el-input__inner {
               height: 24px;
             }
           </style>
@@ -323,8 +323,7 @@ export default {
       })
     },
     // 执行获取数据等初始化动作
-    init() {
-    },
+    init() {},
   },
 }
 </script>
@@ -372,7 +371,7 @@ export default {
   vertical-align: bottom;
 }
 
-.input-new-tag /deep/ .el-input__inner {
+.input-new-tag ::v-deep .el-input__inner {
   height: 24px;
 }
 </style>

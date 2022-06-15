@@ -6,7 +6,7 @@
         <div slot="header"><span>基础用法</span></div>
         <el-row>
           <span class="demonstration"
-          >Timeline 可拆分成多个按照时间戳正序或倒序排列的 activity，时间戳是其区分于其他控件的重要特征，使⽤时注意与
+            >Timeline 可拆分成多个按照时间戳正序或倒序排列的 activity，时间戳是其区分于其他控件的重要特征，使⽤时注意与
             Steps 步骤条等区分。</span
           >
           <div class="block">
@@ -250,8 +250,7 @@ export default {
   },
   methods: {
     // 执行获取数据等初始化动作
-    init() {
-    },
+    init() {},
   },
 }
 </script>
@@ -271,15 +270,15 @@ export default {
   margin-bottom: 20px;
 }
 
-.timeLineCard /deep/ .el-card__body {
+.timeLineCard ::v-deep .el-card__body {
   padding: 20px;
 }
 
-.timeLineCard /deep/ .el-card__body h4 {
+.timeLineCard ::v-deep .el-card__body h4 {
   margin: 20px 0px;
 }
 
-.timeLineCard /deep/ .el-card__body {
+.timeLineCard ::v-deep .el-card__body {
   margin: 14px 0px;
 }
 </style>

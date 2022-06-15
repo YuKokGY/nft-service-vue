@@ -77,7 +77,7 @@ export default {
       activeTab: '修改信息', // tab 标题
       rules: {
         // 表单验证规则
-        name: [{required: true, message: '请输入分组名称', trigger: 'blur'}],
+        name: [{ required: true, message: '请输入分组名称', trigger: 'blur' }],
         info: [],
       },
     }
@@ -126,7 +126,7 @@ export default {
       this.id = selectedData.id
       this.form.name = selectedData.name
       this.form.info = selectedData.info
-      this.cacheForm = {...this.form}
+      this.cacheForm = { ...this.form }
       this.dialogFormVisible = true
     },
     goToGroupEditPage(val) {
@@ -139,7 +139,7 @@ export default {
         selectedData = val
       }
       this.id = selectedData.id
-      this.$router.push({path: '/admin/group/edit', query: {id: selectedData.id}})
+      this.$router.push({ path: '/admin/group/edit', query: { id: selectedData.id } })
     },
     handleDelete(val) {
       let res
@@ -185,11 +185,11 @@ export default {
   },
   async created() {
     await this.getAllGroups()
-    this.tableColumn = [{prop: 'name', label: '名称'}, {prop: 'info', label: '信息'}] // 设置表头信息
+    this.tableColumn = [{ prop: 'name', label: '名称' }, { prop: 'info', label: '信息' }] // 设置表头信息
     this.operate = [
-      {name: '信息', func: 'handleEdit', type: 'primary'},
-      {name: '权限', func: 'goToGroupEditPage', type: 'info'},
-      {name: '删除', func: 'handleDelete', type: 'danger'},
+      { name: '信息', func: 'handleEdit', type: 'primary' },
+      { name: '权限', func: 'goToGroupEditPage', type: 'info' },
+      { name: '删除', func: 'handleDelete', type: 'danger' },
     ]
     // 监听添加分组是否成功
     this.eventBus.$on('addGroup', this.addGroup)
@@ -213,16 +213,16 @@ export default {
   }
 }
 
-.groupListInfoDialog /deep/ .el-dialog__footer {
+.groupListInfoDialog ::v-deep .el-dialog__footer {
   text-align: left;
   padding-left: 30px;
 }
 
-.groupListInfoDialog /deep/ .el-dialog__header {
+.groupListInfoDialog ::v-deep .el-dialog__header {
   padding-left: 30px;
 }
 
-.groupListInfoDialog /deep/ .el-dialog__body {
+.groupListInfoDialog ::v-deep .el-dialog__body {
   padding: 30px;
 }
 </style>

@@ -198,8 +198,7 @@ export default {
   },
   methods: {
     // 执行获取数据等初始化动作
-    init() {
-    },
+    init() {},
   },
 }
 </script>
@@ -207,7 +206,7 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/style/container.scss';
 
-.loadingDemo /deep/ .el-table {
+.loadingDemo ::v-deep .el-table {
   border: none;
 }
 </style>

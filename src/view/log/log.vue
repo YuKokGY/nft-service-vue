@@ -4,7 +4,7 @@
       <div class="log-header">
         <div class="header-left"><p class="title">日志信息</p></div>
         <div v-permission="'搜索日志'" class="header-right">
-          <lin-search ref="searchKeyword" @query="onQueryChange"/>
+          <lin-search ref="searchKeyword" @query="onQueryChange" />
           <el-dropdown
             v-permission="'查询日志记录的用户'"
             size="medium"
@@ -21,7 +21,7 @@
                 :key="index"
                 :command="[user]"
                 icon="el-icon-user-solid"
-              >{{ user }}
+                >{{ user }}
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -34,7 +34,7 @@
       <div v-if="keyword" class="search">
         <p class="search-tip">
           搜索“<span class="search-keyword">{{ keyword }}</span
-        >”， 找到 <span class="search-num">{{ totalCount }}</span> 条日志信息
+          >”， 找到 <span class="search-num">{{ totalCount }}</span> 条日志信息
         </p>
         <button class="search-back" @click="backInit">返回全部日志</button>
       </div>
@@ -70,9 +70,9 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import log from 'lin/model/log'
-import {searchLogKeyword} from 'lin/util/search'
+import { searchLogKeyword } from 'lin/util/search'
 import LinSearch from '@/component/base/search/lin-search'
 import LinDatePicker from '@/component/base/date-picker/lin-date-picker'
 
@@ -176,7 +176,7 @@ export default {
         if (this.user.admin || this.permissions.includes('查询日志记录的用户')) {
           this.users = await log.getLoggedUsers({})
         }
-        const res = await log.getLogs({page: 0})
+        const res = await log.getLogs({ page: 0 })
         this.logs = res.items
       } catch (err) {
         console.error(err.data)
@@ -267,7 +267,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.log /deep/ .el-button {
+.log ::v-deep .el-button {
   padding-top: 10px;
   padding-bottom: 10px;
 }
