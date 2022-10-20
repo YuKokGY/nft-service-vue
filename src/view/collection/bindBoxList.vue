@@ -118,7 +118,7 @@
                 >
                 </el-pagination>
             </div>
-            <el-dialog :visible.sync="showCollection" title="藏品绑定" width="40%">
+            <el-dialog :visible.sync="showCollection" title="藏品绑定" width="45%">
                 <el-form :inline="true" :model="formCollection">
                     <i v-if="!formCollection.dataList.length" class="iconfont icon-jiahao" @click="addContent"></i>
                     <el-row v-for="(item, index) in formCollection.dataList" :key="index" class="input-row">
