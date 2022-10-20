@@ -127,6 +127,16 @@
                                 ></el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="类型" prop="type">
+                            <el-select v-model="form.type">
+                                <el-option
+                                    v-for="item in type"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
                         <el-form-item label="首页展示" prop="is_index">
                             <el-select v-model="form.is_index">
                                 <el-option
@@ -206,6 +216,7 @@ export default {
                 img_url: this.editInfo.img_url,
                 short_img_url: this.editInfo.short_img_url,
                 category_id: this.editInfo.category_id,
+                type: this.editInfo.type,
                 creator_id: this.editInfo.creator_id,
                 issue_id: this.editInfo.issue_id,
                 description: this.editInfo.description,
@@ -213,6 +224,7 @@ export default {
             max_num: 1,
             status: [{ label: '上架', value: 1 }, { label: '下架', value: 2 }, { label: '售罄', value: 3 }],
             trueOrFalse: [{ label: '是', value: true }, { label: '否', value: false }],
+            type: [{ label: '藏品', value: 1 }, { label: '盲盒藏品', value: 2 }, { label: '非卖品', value: 3 }],
             creatorList: [],
             issueList: [],
             categoryList: [],

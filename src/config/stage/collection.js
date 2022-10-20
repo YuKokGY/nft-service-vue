@@ -58,6 +58,16 @@ const collectionRouter = {
             order: null,
             inNav: true,
         },
+        {
+            name: 'bindBoxList',
+            route: '/collection/bindBoxList',
+            filePath: 'view/collection/bindBoxList.vue',
+            title: '盲盒列表',
+            type: 'view',
+            icon: 'iconfont icon-index',
+            order: null,
+            inNav: true,
+        },
     ],
 }
 

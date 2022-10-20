@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="title">
-            添加藏品
+            添加盲盒
             <span class="back" @click="back"> <i class="iconfont el-icon-back"></i> 返回 </span>
         </div>
         <div class="wrap">
@@ -16,36 +16,6 @@
                         status-icon
                         @submit.native.prevent
                     >
-                        <el-form-item label="作者" prop="creator_id">
-                            <el-select v-model="form.creator_id" clearable @clear="form.creator_id = null">
-                                <el-option
-                                    v-for="item in creatorList"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="发行方" prop="issue_id">
-                            <el-select v-model="form.issue_id" clearable @clear="form.issue_id = null">
-                                <el-option
-                                    v-for="item in issueList"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="系列" prop="category_id">
-                            <el-select v-model="form.category_id" clearable @clear="form.category_id = null">
-                                <el-option
-                                    v-for="item in categoryList"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
                         <el-form-item label="名称" prop="name">
                             <el-input
                                 v-model="form.name"
@@ -61,8 +31,14 @@
                         <el-form-item label="主图" prop="img_url">
                             <upload-imgs ref="uploadEle1" :max-num="max_num" :multiple="false" :rules="rules" />
                         </el-form-item>
-                        <el-form-item label="描述" prop="description" style="width: 1100px">
-                            <tinymce-editor @change="getDescContent"></tinymce-editor>
+                        <el-form-item label="发行须知" prop="notice" style="width: 1100px">
+                            <el-input
+                                v-model="form.notice"
+                                :autosize="{ minRows: 2, maxRows: 4 }"
+                                placeholder="请输入内容"
+                                type="textarea"
+                            >
+                            </el-input>
                         </el-form-item>
                         <el-form-item label="价格" prop="price">
                             <el-input
@@ -112,46 +88,6 @@
                                 ></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="类型" prop="type">
-                            <el-select v-model="form.type">
-                                <el-option
-                                    v-for="item in type"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="首页展示" prop="is_index">
-                            <el-select v-model="form.is_index">
-                                <el-option
-                                    v-for="item in trueOrFalse"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="是否合成" prop="is_mix">
-                            <el-select v-model="form.is_mix">
-                                <el-option
-                                    v-for="item in trueOrFalse"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="是否兑换" prop="is_exchange">
-                            <el-select v-model="form.is_exchange">
-                                <el-option
-                                    v-for="item in trueOrFalse"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
                         <el-form-item class="submit">
                             <el-button type="primary" @click="submitForm('form')">保 存</el-button>
                             <el-button @click="resetForm('form')">重 置</el-button>
@@ -166,15 +102,9 @@
 <script>
 import model from '@/model/baseModel'
 import UploadImgs from '@/component/base/upload-image/index'
-import TinymceEditor from '@/component/base/tinymce'
 
 export default {
-    components: { TinymceEditor, UploadImgs },
-    async beforeMount() {
-        await this.getCreatorList()
-        await this.getIssueList()
-        await this.getCategoryList()
-    },
+    components: { UploadImgs },
     data() {
         // 校验输入框不能为空
         const validateAll = (rule, value, callback) => {
@@ -189,25 +119,17 @@ export default {
                 name: '',
                 status: 2,
                 price: 0.0,
-                type: 1,
-                is_mix: false,
-                is_exchange: false,
-                is_index: false,
                 stock: 0,
                 mold_count: 0,
+                notice: '',
             },
             max_num: 1,
             status: [{ label: '上架', value: 1 }, { label: '下架', value: 2 }, { label: '售罄', value: 3 }],
-            trueOrFalse: [{ label: '是', value: true }, { label: '否', value: false }],
-            type: [{ label: '藏品', value: 1 }, { label: '盲盒藏品', value: 2 }, { label: '非卖品', value: 3 }],
             creatorList: [],
             issueList: [],
             categoryList: [],
             rules: {
-                creator_id: [{ validator: validateAll, trigger: 'blur', required: true }],
-                issue_id: [{ validator: validateAll, trigger: 'blur', required: true }],
-                category_id: [{ validator: validateAll, trigger: 'blur', required: true }],
-                description: [{ validator: validateAll, trigger: 'blur', required: true }],
+                notice: [{ validator: validateAll, trigger: 'blur', required: true }],
                 img_url: [{ validator: validateAll, trigger: 'blur', required: true }],
                 short_img_url: [{ validator: validateAll, trigger: 'blur', required: true }],
                 name: [{ validator: validateAll, trigger: 'blur', required: true }],
@@ -225,39 +147,6 @@ export default {
         back() {
             this.$emit('createClose')
         },
-        //获取所有作者列表
-        async getCreatorList() {
-            const res = await model.getAllByList('/cms/creator/getList?type=1')
-            res.forEach(item => {
-                let json = {}
-                json.value = item.id
-                json.label = item.name
-                this.creatorList.push(json)
-            })
-        },
-        //获取所有发行者列表
-        async getIssueList() {
-            const res = await model.getAllByList('/cms/creator/getList?type=2')
-            res.forEach(item => {
-                let json = {}
-                json.value = item.id
-                json.label = item.name
-                this.issueList.push(json)
-            })
-        },
-        //获取系列列表
-        async getCategoryList() {
-            const res = await model.getAllByList('/cms/category/getList')
-            res.forEach(item => {
-                let json = {}
-                json.value = item.id
-                json.label = item.name
-                this.categoryList.push(json)
-            })
-        },
-        getDescContent(val) {
-            this.form.description = val
-        },
         // 提交按钮
         async submitForm() {
             await this.$refs['form'].validate(async valid => {
@@ -268,7 +157,7 @@ export default {
                     if ((await this.$refs.uploadEle1.getValue())[0] !== undefined) {
                         this.form.img_url = (await this.$refs.uploadEle1.getValue())[0].display
                     }
-                    const res = await model.create('/cms/collectionList/createOrUpdate', this.form)
+                    const res = await model.create('/cms/bindBox/createOrUpdate', this.form)
                     if (res.code < window.MAX_SUCCESS_CODE) {
                         this.$message.success(`${res.message}`)
                         this.$emit('createClose')

@@ -37,20 +37,61 @@
                 </div>
             </div>
             <!--表格-->
-            <lin-table
+            <el-table
+                ref="multipleTable"
                 v-loading="loading"
-                :operate="operate"
-                :operate-width="200"
-                :pagination="{ currentPage: currentPage, pageSize: pageCount, total: total_nums }"
-                :table-column="tableColumn"
-                :tableData="tableData"
-                type="selection"
+                :border="true"
+                :data="tableData"
+                :header-cell-style="{ background: '#e6e8ee', color: '#606266' }"
+                :header-row-style="{ height: '53px' }"
+                :row-style="{ width: '200px' }"
+                max-height="520"
+                row-key="id"
+                stripe
                 @currentChange="handleCurrentChange"
-                @handleDelete="handleDelete"
-                @handleEdit="handleEdit"
-                @selection-change="checkBoxSelect"
+                @selection-change="handleSelectionChange"
             >
-            </lin-table>
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column :width="80" label="ID" prop="id"></el-table-column>
+                <el-table-column :width="150" label="名称" prop="name" show-overflow-tooltip></el-table-column>
+                <el-table-column :width="200" label="头像" prop="avatar"></el-table-column>
+                <el-table-column :width="100" label="状态">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" effect="dark">
+                            {{ scope.row.status === 1 ? '正常' : '失效' }}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column :width="200" label="创建时间" prop="create_time"></el-table-column>
+                <el-table-column :width="200" label="更新时间" prop="update_time"></el-table-column>
+                <el-table-column :width="200" align="center" fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button plain size="mini" type="primary" @click="handleEdit(scope)">编辑 </el-button>
+                        <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除 </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!--            <div style="position: fixed;margin-top: 20px">-->
+            <!--                <el-button :disabled="checkBoxData.length === 0" round type="danger" @click="handleBatchDelete">-->
+            <!--                    批量删除-->
+            <!--                </el-button>-->
+            <!--            </div>-->
+
+            <div class="pagination">
+                <el-pagination
+                    v-if="refreshPagination"
+                    :background="true"
+                    :current-page="currentPage"
+                    :page-size="pageCount"
+                    :page-sizes="[10, 20, 30, 40, 50, 100]"
+                    :total="total_nums"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    @current-change="handleCurrentChange"
+                    @size-change="handleSizeChange"
+                >
+                </el-pagination>
+            </div>
         </div>
         <issue-create v-else-if="showCreate" @createClose="createClose"></issue-create>
         <issue-modify v-else-if="showEdit" :edit-info="tableData.row" @editClose="editClose"></issue-modify>
@@ -106,6 +147,16 @@ export default {
             this.loading = true
             await this.getList(this.modelDO, 'changePage')
             this.loading = false
+        },
+        async handleSizeChange(val) {
+            this.pageCount = val
+            this.loading = true
+            await this.getList(this.modelDO, 'changePage')
+            this.loading = false
+        },
+        //多选
+        handleSelectionChange(val) {
+            this.checkBoxData = val
         },
         async getList(val) {
             const currentPage = this.currentPage - 1

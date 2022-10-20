@@ -35,33 +35,6 @@
                             :value="item.value"
                         ></el-option>
                     </el-select>
-                    <el-select
-                        v-model="modelDO.type"
-                        class="select"
-                        clearable
-                        placeholder="类型"
-                        size="medium"
-                        @change="changeSelect"
-                        @clear="modelDO.type = null"
-                    >
-                        <el-option
-                            v-for="item in type"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                        ></el-option>
-                    </el-select>
-                    <el-input
-                        v-model="modelDO.id"
-                        autocomplete="off"
-                        class="input"
-                        clearable
-                        placeholder="ID"
-                        prefix-icon="el-icon-search"
-                        size="medium"
-                        @blur="searchWithTitle"
-                        @clear="clearAll"
-                    ></el-input>
                     <el-input
                         v-model="modelDO.name"
                         autocomplete="off"
@@ -93,18 +66,11 @@
                 <el-table-column type="selection"></el-table-column>
                 <el-table-column :width="80" label="ID" prop="id"></el-table-column>
                 <el-table-column :width="150" label="名称" prop="name" show-overflow-tooltip></el-table-column>
-                <el-table-column :width="100" label="状态" prop="name">
+                <el-table-column :width="150" label="状态">
                     <template slot-scope="scope">
-                        <el-tag v-if="scope.row.status === 1" type="success" effect="dark">上架</el-tag>
-                        <el-tag v-if="scope.row.status === 2" type="danger" effect="dark">下架</el-tag>
-                        <el-tag v-if="scope.row.status === 3" type="info" effect="dark">售罄</el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column :width="100" label="类型">
-                    <template slot-scope="scope">
-                        <el-tag v-if="scope.row.status === 1" type="success" effect="dark">藏品</el-tag>
-                        <el-tag v-if="scope.row.status === 2" type="danger" effect="dark">盲盒藏品</el-tag>
-                        <el-tag v-if="scope.row.status === 3" type="info" effect="dark">非卖品</el-tag>
+                        <el-tag v-if="scope.row.status === 1" effect="dark" type="success">上架</el-tag>
+                        <el-tag v-if="scope.row.status === 2" effect="dark" type="danger">下架</el-tag>
+                        <el-tag v-if="scope.row.status === 3" effect="dark" type="warning">售罄</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column :width="100" label="缩略图">
@@ -130,20 +96,10 @@
                 ></el-table-column>
                 <el-table-column :width="400" align="center" fixed="right" label="操作">
                     <template slot-scope="scope">
-                        <el-button
-                            :disabled="!scope.row.is_exchange"
-                            plain
-                            size="mini"
-                            type="primary"
-                            @click="handleConvert(scope.row)"
-                            >兑换码
-                        </el-button>
-                        <el-button plain size="mini" type="primary" @click="handleDrop(scope.row)">空投 </el-button>
-                        <el-button plain size="mini" type="primary" @click="handleOtherDrop(scope.row)"
-                            >其他空投
-                        </el-button>
-                        <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑 </el-button>
-                        <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除 </el-button>
+                        <el-button plain size="mini" type="primary" @click="handleConvert(scope.row)">藏品 </el-button>
+                        <el-button plain size="mini" type="primary" @click="handleDrop(scope.row)">空投</el-button>
+                        <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -162,23 +118,58 @@
                 >
                 </el-pagination>
             </div>
-            <el-dialog :visible.sync="showConvert" title="兑换码">
-                <el-form :model="formConvert">
-                    <el-form-item label="生成数量" label-width="100">
-                        <el-input v-model.number="formConvert.count" autocomplete="off" style="width: 100px"></el-input>
-                    </el-form-item>
-                    <el-form-item label="过期时间" label-width="100">
-                        <el-date-picker
-                            v-model="formConvert.expired_time"
-                            placeholder="选择日期时间"
-                            type="datetime"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                        >
-                        </el-date-picker>
-                    </el-form-item>
+            <el-dialog :visible.sync="showCollection" title="藏品绑定" width="40%">
+                <el-form :inline="true" :model="formCollection">
+                    <i v-if="!formCollection.dataList.length" class="iconfont icon-jiahao" @click="addContent"></i>
+                    <el-row v-for="(item, index) in formCollection.dataList" :key="index" class="input-row">
+                        <el-form-item label="藏品" label-width="100">
+                            <el-select
+                                v-model="item.collection_id"
+                                class="select"
+                                style="width: 150px"
+                                placeholder="藏品"
+                                size="medium"
+                            >
+                                <el-option
+                                    v-for="item in collectionList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="概率" label-width="100">
+                            <el-input
+                                v-model.number="item.percent"
+                                placeholder="请输入百分比"
+                                size="medium"
+                                style="width: 80px"
+                            ></el-input
+                            ><span style="margin-left: 5px">%</span>
+                        </el-form-item>
+                        <el-form-item label="数量" label-width="100">
+                            <el-input
+                                v-model.number="item.count"
+                                placeholder="请输入数量"
+                                size="medium"
+                                style="width: 80px"
+                            ></el-input>
+                            <i
+                                class="iconfont icon-jianhao"
+                                style="margin-left: 30px"
+                                @click="removeContent(index)"
+                            ></i>
+                            <i
+                                v-if="index === formCollection.dataList.length - 1"
+                                style="margin-left: 10px"
+                                class="iconfont icon-jiahao"
+                                @click="addContent"
+                            ></i>
+                        </el-form-item>
+                    </el-row>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="showConvert = false">取 消</el-button>
+                    <el-button @click="showCollection = false">取 消</el-button>
                     <el-button type="primary" @click="submitConvert">确 定</el-button>
                 </div>
             </el-dialog>
@@ -208,50 +199,20 @@
                     <el-button type="primary" @click="submitDrop">确 定</el-button>
                 </div>
             </el-dialog>
-            <el-dialog :visible.sync="showOtherDrop" title="其他空投">
-                <el-form :model="formOtherDrop">
-                    <div style="margin-bottom: 20px">
-                        <span style="color: red;"
-                            >注意：若填写的空投数量大于随机用户的最大值，则按随机用户最大值投送</span
-                        >
-                    </div>
-                    <el-form-item label="空投数量" label-width="100">
-                        <el-input
-                            v-model.number="formOtherDrop.count"
-                            autocomplete="off"
-                            style="width: 100px"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item label="用户" label-width="75px">
-                        <el-select v-model="formOtherDrop.user_type" class="select" placeholder="用户" size="medium">
-                            <el-option
-                                v-for="item in userType"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="showOtherDrop = false">取 消</el-button>
-                    <el-button type="primary" @click="submitOtherDrop">确 定</el-button>
-                </div>
-            </el-dialog>
         </div>
-        <collection-create v-else-if="showCreate" @createClose="createClose"></collection-create>
-        <collection-modify v-else-if="showEdit" :edit-info="tableData.row" @editClose="editClose"></collection-modify>
+        <bind-box-create v-else-if="showCreate" @createClose="createClose"></bind-box-create>
+        <bind-box-modify v-else-if="showEdit" :edit-info="tableData.row" @editClose="editClose"></bind-box-modify>
     </div>
 </template>
 
 <script>
 import LinTable from '@/component/base/table/lin-table'
 import baseModel from '@/model/baseModel'
-import CollectionCreate from '@/view/collection/collection-create'
-import CollectionModify from '@/view/collection/collection-modify'
+import BindBoxCreate from '@/view/collection/bindBox-create'
+import BindBoxModify from '@/view/collection/bindBox-modify'
 
 export default {
-    components: { CollectionModify, CollectionCreate, LinTable },
+    components: { BindBoxModify, BindBoxCreate, LinTable },
     data() {
         return {
             loading: false,
@@ -261,35 +222,28 @@ export default {
             pageCount: 10, // 每页10条数据
             tableColumn: [],
             tableData: [],
-            showConvert: false,
+            showCollection: false,
             checkBoxData: [],
             showCreate: false,
             showEdit: false,
-            showOtherDrop: false,
             showDrop: false,
             operate: [],
+            collectionList: [],
             userList: [],
-            userType: [{ label: '随机用户', value: 1 }, { label: '全部用户', value: 2 }],
             status: [{ label: '上架', value: 1 }, { label: '下架', value: 2 }, { label: '售罄', value: 3 }],
-            type: [{ label: '藏品', value: 1 }, { label: '盲盒藏品', value: 2 }, { label: '非卖品', value: 3 }],
             date: [],
             modelDO: {},
-            formConvert: {
-                collection_id: null,
-                expired_time: null,
-                count: 1,
+            formCollection: {
+                dataList: [],
             },
             formDrop: {},
-            formOtherDrop: {
-                user_type: 1,
-                count: 1,
-            },
         }
     },
     async created() {
         this.loading = true
         await this.getList(this.modelDO)
         await this.getUserList()
+        await this.getCollectionList()
         this.loading = false
     },
     methods: {
@@ -310,7 +264,7 @@ export default {
             const currentPage = this.currentPage - 1
             try {
                 this.loading = true
-                const res = await baseModel.postList('/cms/collectionList/getAll', val, {
+                const res = await baseModel.postList('/cms/bindBox/getAll', val, {
                     count: this.pageCount,
                     page: currentPage,
                 })
@@ -344,9 +298,6 @@ export default {
         },
         // 选择框逻辑
         async changeSelect() {
-            if (this.modelDO.online === null) {
-                await this.getList()
-            }
             await this.getList(this.modelDO)
         },
         // 删除按钮逻辑
@@ -369,6 +320,16 @@ export default {
             })
         },
 
+        async getCollectionList() {
+            const res = await baseModel.getAllByList('/cms/collectionList/getList?type=2')
+            res.forEach(item => {
+                let json = {}
+                json.value = item.id
+                json.label = item.name
+                this.collectionList.push(json)
+            })
+        },
+
         async getUserList() {
             const res = await baseModel.getAllByList('/cms/clientUser/getAll')
             res.forEach(item => {
@@ -380,12 +341,13 @@ export default {
         },
 
         async submitConvert() {
-            const res = await baseModel.create('/cms/convertCode/createConvert', this.formConvert)
-            if (res.code < window.MAX_SUCCESS_CODE) {
-                this.$message.success('创建成功')
-                this.showConvert = false
-                this.formConvert = { count: 1 }
-            } else this.$message.error(res.message)
+            // const res = await baseModel.create('/cms/convertCode/createConvert', this.formCollection)
+            // if (res.code < window.MAX_SUCCESS_CODE) {
+            //     this.$message.success('创建成功')
+            //     this.showCollection = false
+            //     this.formCollection = {count: 1}
+            // } else this.$message.error(res.message)
+            this.$message.error('接口还没开发呢!')
         },
 
         async submitDrop() {
@@ -398,27 +360,24 @@ export default {
             } else this.$message.error(res.message)
         },
 
-        async submitOtherDrop() {
-            this.formOtherDrop.type = 2
-            const res = await baseModel.create('/cms/airdropLog/dropUsers', this.formOtherDrop)
-            if (res.code < window.MAX_SUCCESS_CODE) {
-                this.$message.success(res.message)
-                this.showOtherDrop = false
-                this.formOtherDrop = { count: 1 }
-            } else this.$message.error(res.message)
+        addContent() {
+            this.formCollection.dataList.push({
+                collection_id: null,
+                percent: 0,
+                count: 0,
+            })
+        },
+        removeContent(index) {
+            this.formCollection.dataList.splice(index, 1)
         },
 
         handleConvert(val) {
-            this.showConvert = true
-            this.formConvert.collection_id = val.id
+            this.showCollection = true
+            this.formCollection.id = val.id
         },
         handleDrop(val) {
             this.showDrop = true
             this.formDrop.collection_id = val.id
-        },
-        handleOtherDrop(val) {
-            this.showOtherDrop = true
-            this.formOtherDrop.collection_id = val.id
         },
         // 编辑按钮
         handleEdit(val) {
