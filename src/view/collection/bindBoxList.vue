@@ -79,8 +79,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column :width="100" label="价格" prop="price"></el-table-column>
-                <el-table-column :width="100" label="限量" prop="mold_count"></el-table-column>
-                <el-table-column :width="100" label="库存" prop="stock"></el-table-column>
+                <!--                <el-table-column :width="100" label="限量" prop="mold_count"></el-table-column>-->
+                <!--                <el-table-column :width="100" label="库存" prop="stock"></el-table-column>-->
                 <el-table-column :width="200" label="发售日期" prop="sale_time" show-overflow-tooltip></el-table-column>
                 <el-table-column
                     :width="200"
@@ -96,13 +96,19 @@
                 ></el-table-column>
                 <el-table-column :width="400" align="center" fixed="right" label="操作">
                     <template slot-scope="scope">
-                        <el-button plain size="mini" type="primary" @click="handleConvert(scope.row)">藏品 </el-button>
+                        <el-button plain size="mini" type="primary" @click="handleConvert(scope.row)">藏品</el-button>
                         <el-button plain size="mini" type="primary" @click="handleDrop(scope.row)">空投</el-button>
                         <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
+
+            <div style="position: fixed;margin-top: 20px">
+                <el-button :disabled="checkBoxData.length === 0" round type="danger" @click="batchDelete">
+                    批量删除
+                </el-button>
+            </div>
 
             <div class="pagination">
                 <el-pagination
@@ -118,6 +124,7 @@
                 >
                 </el-pagination>
             </div>
+
             <el-dialog :visible.sync="showCollection" title="藏品绑定" width="45%">
                 <el-form :inline="true" :model="formCollection">
                     <i v-if="!formCollection.dataList.length" class="iconfont icon-jiahao" @click="addContent"></i>
@@ -125,14 +132,19 @@
                         <el-form-item label="藏品" label-width="100">
                             <el-select
                                 v-model="item.collection_id"
+                                :disabled="isEdit"
                                 class="select"
-                                style="width: 150px"
+                                clearable
                                 placeholder="藏品"
                                 size="medium"
+                                style="width: 150px"
+                                @change="collectionList[index].disabled = true"
+                                @clear="collectionList[index].disabled = false"
                             >
                                 <el-option
                                     v-for="item in collectionList"
                                     :key="item.value"
+                                    :disabled="item.disabled"
                                     :label="item.label"
                                     :value="item.value"
                                 ></el-option>
@@ -141,30 +153,34 @@
                         <el-form-item label="概率" label-width="100">
                             <el-input
                                 v-model.number="item.percent"
+                                :disabled="isEdit"
                                 placeholder="请输入百分比"
                                 size="medium"
                                 style="width: 80px"
-                            ></el-input
-                            ><span style="margin-left: 5px">%</span>
+                            ></el-input>
+                            <span style="margin-left: 5px">%</span>
                         </el-form-item>
                         <el-form-item label="数量" label-width="100">
                             <el-input
                                 v-model.number="item.count"
+                                :disabled="isEdit"
                                 placeholder="请输入数量"
                                 size="medium"
                                 style="width: 80px"
                             ></el-input>
-                            <i
-                                class="iconfont icon-jianhao"
-                                style="margin-left: 30px"
-                                @click="removeContent(index)"
-                            ></i>
-                            <i
-                                v-if="index === formCollection.dataList.length - 1"
-                                style="margin-left: 10px"
-                                class="iconfont icon-jiahao"
-                                @click="addContent"
-                            ></i>
+                            <div v-if="!isEdit">
+                                <i
+                                    class="iconfont icon-jianhao"
+                                    style="margin-left: 30px"
+                                    @click="removeContent(index)"
+                                ></i>
+                                <i
+                                    v-if="index === formCollection.dataList.length - 1"
+                                    class="iconfont icon-jiahao"
+                                    style="margin-left: 10px"
+                                    @click="addContent"
+                                ></i>
+                            </div>
                         </el-form-item>
                     </el-row>
                 </el-form>
@@ -228,15 +244,20 @@ export default {
             showEdit: false,
             showDrop: false,
             operate: [],
+            box_id: null,
             collectionList: [],
             userList: [],
+            isEdit: false, //藏品配置是否创建
             status: [{ label: '上架', value: 1 }, { label: '下架', value: 2 }, { label: '售罄', value: 3 }],
             date: [],
             modelDO: {},
             formCollection: {
                 dataList: [],
             },
-            formDrop: {},
+            formDrop: {
+                user_ids: [],
+                box_id: null,
+            },
         }
     },
     async created() {
@@ -308,7 +329,30 @@ export default {
                 type: 'warning',
             }).then(async () => {
                 this.loading = true
-                const res = await spu.delete('/cms/spu/deleteSpu', val.row.id)
+                const res = await baseModel.deleteBatch('/cms/bindBox/deleteBox', [val])
+                this.loading = false
+                if (res.code < window.MAX_SUCCESS_CODE) {
+                    await this.getList(this.modelDO)
+                    this.$message({
+                        type: 'success',
+                        message: `${res.message}`,
+                    })
+                }
+            })
+        },
+
+        batchDelete() {
+            let ids = []
+            this.checkBoxData.forEach(item => {
+                ids.push(item.id)
+            })
+            this.$confirm('此操作将永久删除，是否继续？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(async () => {
+                this.loading = true
+                const res = await baseModel.deleteBatch('/cms/bindBox/deleteBox', ids)
                 this.loading = false
                 if (res.code < window.MAX_SUCCESS_CODE) {
                     await this.getList(this.modelDO)
@@ -330,6 +374,15 @@ export default {
             })
         },
 
+        async getBindConfig(val) {
+            this.formCollection.dataList = []
+            const res = await baseModel.getById('/cms/bindBox/getBoxConfig', val)
+            if (res.length !== 0) this.isEdit = true
+            res.forEach(item => {
+                this.formCollection.dataList.push(item)
+            })
+        },
+
         async getUserList() {
             const res = await baseModel.getAllByList('/cms/clientUser/getAll')
             res.forEach(item => {
@@ -341,18 +394,16 @@ export default {
         },
 
         async submitConvert() {
-            // const res = await baseModel.create('/cms/convertCode/createConvert', this.formCollection)
-            // if (res.code < window.MAX_SUCCESS_CODE) {
-            //     this.$message.success('创建成功')
-            //     this.showCollection = false
-            //     this.formCollection = {count: 1}
-            // } else this.$message.error(res.message)
-            this.$message.error('接口还没开发呢!')
+            const res = await baseModel.create('/cms/bindBox/bindCollection', this.formCollection.dataList)
+            if (res.code < window.MAX_SUCCESS_CODE) {
+                this.$message.success('创建成功')
+                this.showCollection = false
+                this.formCollection.dataList = []
+            } else this.$message.error(res.message)
         },
 
         async submitDrop() {
-            this.formDrop.type = 1
-            const res = await baseModel.create('/cms/airdropLog/dropUsers', this.formDrop)
+            const res = await baseModel.create('/cms/bindBox/dropUsers', this.formDrop)
             if (res.code < window.MAX_SUCCESS_CODE) {
                 this.$message.success(res.message)
                 this.showDrop = false
@@ -362,6 +413,7 @@ export default {
 
         addContent() {
             this.formCollection.dataList.push({
+                box_id: this.box_id,
                 collection_id: null,
                 percent: 0,
                 count: 0,
@@ -371,13 +423,15 @@ export default {
             this.formCollection.dataList.splice(index, 1)
         },
 
-        handleConvert(val) {
+        async handleConvert(val) {
+            this.isEdit = false
             this.showCollection = true
-            this.formCollection.id = val.id
+            this.box_id = val.id
+            await this.getBindConfig(this.box_id)
         },
         handleDrop(val) {
             this.showDrop = true
-            this.formDrop.collection_id = val.id
+            this.formDrop.box_id = val.id
         },
         // 编辑按钮
         handleEdit(val) {

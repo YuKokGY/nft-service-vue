@@ -95,16 +95,16 @@
                 <el-table-column :width="150" label="名称" prop="name" show-overflow-tooltip></el-table-column>
                 <el-table-column :width="100" label="状态" prop="name">
                     <template slot-scope="scope">
-                        <el-tag v-if="scope.row.status === 1" type="success" effect="dark">上架</el-tag>
-                        <el-tag v-if="scope.row.status === 2" type="danger" effect="dark">下架</el-tag>
-                        <el-tag v-if="scope.row.status === 3" type="info" effect="dark">售罄</el-tag>
+                        <el-tag v-if="scope.row.status === 1" effect="dark" type="success">上架</el-tag>
+                        <el-tag v-if="scope.row.status === 2" effect="dark" type="danger">下架</el-tag>
+                        <el-tag v-if="scope.row.status === 3" effect="dark" type="info">售罄</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column :width="100" label="类型">
                     <template slot-scope="scope">
-                        <el-tag v-if="scope.row.status === 1" type="success" effect="dark">藏品</el-tag>
-                        <el-tag v-if="scope.row.status === 2" type="danger" effect="dark">盲盒藏品</el-tag>
-                        <el-tag v-if="scope.row.status === 3" type="info" effect="dark">非卖品</el-tag>
+                        <el-tag v-if="scope.row.status === 1" effect="dark" type="success">藏品</el-tag>
+                        <el-tag v-if="scope.row.status === 2" effect="dark" type="danger">盲盒藏品</el-tag>
+                        <el-tag v-if="scope.row.status === 3" effect="dark" type="info">非卖品</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column :width="100" label="缩略图">
@@ -138,12 +138,12 @@
                             @click="handleConvert(scope.row)"
                             >兑换码
                         </el-button>
-                        <el-button plain size="mini" type="primary" @click="handleDrop(scope.row)">空投 </el-button>
+                        <el-button plain size="mini" type="primary" @click="handleDrop(scope.row)">空投</el-button>
                         <el-button plain size="mini" type="primary" @click="handleOtherDrop(scope.row)"
                             >其他空投
                         </el-button>
-                        <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑 </el-button>
-                        <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除 </el-button>
+                        <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button plain size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

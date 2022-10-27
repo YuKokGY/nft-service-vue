@@ -50,24 +50,6 @@
                                 style="width: 300px"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="铸造数量" prop="mold_count">
-                            <el-input
-                                v-model.number="form.mold_count"
-                                autocomplete="off"
-                                placeholder="铸造数量"
-                                size="medium"
-                                style="width: 300px"
-                            ></el-input>
-                        </el-form-item>
-                        <el-form-item label="库存" prop="stock">
-                            <el-input
-                                v-model.number="form.stock"
-                                autocomplete="off"
-                                placeholder="库存"
-                                size="medium"
-                                style="width: 300px"
-                            ></el-input>
-                        </el-form-item>
                         <el-form-item label="发售时间" prop="sale_time">
                             <el-date-picker
                                 v-model="form.sale_time"
